@@ -15,6 +15,15 @@ const reiniciarConversacion = () => {
   return "Conversación reiniciada. ¿En qué puedo ayudarte con tu mascota?";
 };
 
+const mejorarInstruccionesSistema = () => {
+  return "Eres PetBot, asistente del refugio PetConnect en Perú. IMPORTANTE: Tus respuestas deben ser claras, organizadas y útiles. Sigue estas reglas:\n\
+1. Usa encabezados claros para cada sección relevante.\n\
+2. Usa listas numeradas para información estructurada (máximo 5 puntos).\n\
+3. Responde en un tono profesional y amigable.\n\
+4. Proporciona ejemplos concretos si es necesario.\n\
+5. Mantén las respuestas concisas, pero no omitas información importante.";
+};
+
 const formatearListasEnumeradas = (texto) => {
   let lineas = texto.split('\n');
   let resultado = [];
@@ -45,33 +54,30 @@ const formatearListasEnumeradas = (texto) => {
 };
 
 const limpiarRespuesta = (respuesta) => {
-  let textoLimpio = respuesta.replace(/<\|im_end\|>|<\|im_start\|>|<\|.*?\|>/g, '');
-  
+  let textoLimpio = respuesta.replace(/<\|im_end\|>|<\|im_start\|>|<\|.*?\|>/g, '').trim();
+
   textoLimpio = textoLimpio.replace(/```.*?```/gs, '').trim();
-  
+
   textoLimpio = textoLimpio.replace(/user:.*|assistant:.*|humano:.*|usuario:.*|system:.*/gi, '').trim();
-  
-  const posiblesPreguntasUsuario = textoLimpio.match(/\?.*quiero adoptar|\?.*busco|\?.*necesito/i);
-  if (posiblesPreguntasUsuario) {
-    textoLimpio = textoLimpio.substring(0, textoLimpio.indexOf(posiblesPreguntasUsuario[0]) + 1);
-  }
 
   const lineas = textoLimpio.split('\n');
-  if (lineas.length > 5) {
-    textoLimpio = lineas.slice(0, 5).join('\n');
-  }
-
-  if (textoLimpio.length > 400) {
-    textoLimpio = textoLimpio.substring(0, 400);
-    const ultimoEspacio = textoLimpio.lastIndexOf(' ');
-    if (ultimoEspacio > 350) {
-      textoLimpio = textoLimpio.substring(0, ultimoEspacio);
+  const encabezados = lineas.map((linea) => {
+    if (linea.match(/^[A-Z].*:/)) {
+      return `### ${linea}`;
     }
-  }
+    return linea;
+  });
 
-  textoLimpio = formatearListasEnumeradas(textoLimpio);
+  textoLimpio = encabezados.join('\n');
 
-  return textoLimpio;
+  const listasNumeradas = textoLimpio.split('\n').map((linea, index) => {
+    if (linea.startsWith('- ')) {
+      return `${index + 1}. ${linea.slice(2)}`;
+    }
+    return linea;
+  });
+
+  return listasNumeradas.join('\n');
 };
 
 const generarClaveCaché = () => {
@@ -113,7 +119,7 @@ const responderChat = async (mensajeUsuario) => {
     const mensajesIA = [
       {
         "role": "system",
-        "content": "Eres PetBot, asistente del refugio PetConnect en Perú. IMPORTANTE: Tus respuestas DEBEN ser ULTRA CONCISAS (máximo 250 caracteres en total). Para listas, usa SIEMPRE formato numerado con un máximo de 3 puntos, cada uno con UNA SOLA ORACIÓN breve. Ejemplo de respuesta correcta: 'Los gatos necesitan:\n1. Vacuna triple felina anual\n2. Desparasitación cada 3 meses\n3. Revisión veterinaria semestral'. Nunca uses explicaciones largas. Sé directo y específico. Evita saludos extensos o cierres. Céntrate solo en la información esencial. Si el usuario pide más información, responde solo lo solicitado sin añadir contenido extra."
+        "content": mejorarInstruccionesSistema()
       },
       ...historialConversacion
     ];
