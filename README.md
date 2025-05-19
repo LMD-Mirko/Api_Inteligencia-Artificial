@@ -25,24 +25,28 @@ API REST para un chatbot inteligente que utiliza la API de Together para proporc
 ## 🔧 Instalación
 
 1. Clona el repositorio:
+
 ```bash
 git clone https://github.com/MRamosL/Api_Inteligencia-Artificial.git
 cd Api_Inteligencia-Artificial
 ```
 
 2. Instala las dependencias:
+
 ```bash
 npm install
 ```
 
 3. Configura las variables de entorno (si es necesario):
+
 ```bash
-PORT=3001  # Puerto opcional, por defecto es 3001
+PORT=3001
 ```
 
 ## 🚀 Uso
 
 1. Inicia el servidor:
+
 ```bash
 npm start
 ```
@@ -52,27 +56,33 @@ El servidor se iniciará en `http://localhost:3001` (o el puerto especificado).
 ## 📡 Endpoints Disponibles
 
 ### GET /api/status
+
 Verifica el estado del servicio y la conexión con la API de Together.
 
 ### POST /api/chat
+
 Envía un mensaje al chatbot.
 
 **Body:**
+
 ```json
 {
-    "mensaje": "Tu mensaje aquí"
+  "mensaje": "Tu mensaje aquí"
 }
 ```
 
 ### POST /api/chat/reiniciar
+
 Reinicia la conversación actual.
 
 ### GET /api
+
 Muestra información sobre los endpoints disponibles.
 
 ## ⚙️ Configuración
 
 El servidor se configura automáticamente para:
+
 - Usar el puerto especificado en la variable de entorno PORT o 3001 por defecto
 - Verificar la conexión con la API cada 5 minutos
 - Manejar timeouts de 30 segundos para las respuestas
@@ -90,8 +100,6 @@ El servidor se configura automáticamente para:
 - axios: ^1.9.0
 - cors: ^2.8.5
 
-
-
 ## 📝 Licencia
 
 Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
@@ -103,4 +111,3 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.m
 - Verificación periódica del estado de la API
 - Documentación de API integrada
 - Respuestas en formato JSON estandarizado
-
